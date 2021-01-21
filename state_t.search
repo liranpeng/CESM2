@@ -1,0 +1,546 @@
+cam/doc/ChangeLog:109160:One-line Summary: Patched FV communicator bug in coupled mode; T3 reset to phys_state%t in p_d_coupling; config. improvments
+cam/doc/ChangeLog:109196:		dp_coupling.F90 :  t3 reset to phys_state%t in p_d_coupling
+cam/src/physics/waccm/nlte_lw.F90:293:    call nlte_fomichev_calc (lchnk,ncol,state%pmid,state%pint,state%t, &
+cam/src/physics/waccm/nlte_lw.F90:297:    call nocooling (ncol, state%t, state%pmid, xnommr,xommr,xo2mmr,xo3mmr,xn2mmr,nocool)
+cam/src/physics/waccm/nlte_lw.F90:300:    call o3pcooling (ncol, state%t, xommr, o3pcool)
+cam/src/physics/waccm/iondrag.F90:751:          tn (i,k) = state%t(i,k)
+cam/src/physics/waccm/iondrag.F90:1320:       max_q      = 100._r8*maxval( abs( qjoule(:ncol,ntop_lev:nbot_lev) )/state%t(:ncol,ntop_lev:nbot_lev) )
+cam/src/physics/waccm/iondrag.F90:1321:       max_ind(:) = maxloc( abs( qjoule(:ncol,ntop_lev:nbot_lev) )/state%t(:ncol,ntop_lev:nbot_lev) )
+cam/src/physics/waccm/iondrag.F90:1330:          write(iulog,*) 'jouleheat_tend: dt,t,max% dt/t = ',qjoule(i,k)/cpairv(i,k,lchnk),state%t(i,k),max_q, &
+cam/src/physics/waccmx/steady_state_tei.F90:149:       tn(1:pver,i) = state%t(i,pver:1:-1)
+cam/src/physics/waccmx/majorsp_diffusion.F90:178:       call ubc_get_vals( lchnk, ncol, state%pint, state%zi, state%t, state%q, &
+cam/src/physics/waccmx/majorsp_diffusion.F90:193:                  state%t    ,ptend%q    ,state%pmid ,state%pint ,             &
+cam/src/physics/waccmx/ion_electron_temp.F90:540:    tN   => state%t(1:ncol,1:pver)
+cam/src/physics/waccmx/ion_electron_temp.F90:542:    tNInt => istate%tNInt(1:ncol,1:pverp)
+cam/src/physics/waccmx/ion_electron_temp.F90:1082:    tN    => state%t(1:ncol,1:pver)
+cam/src/physics/waccmx/ion_electron_temp.F90:1088:    tNInt   => istate%tNInt(1:ncol,1:pverp)        
+cam/src/physics/rrtmg/rrtmg_state.F90:107:    allocate( rstate%tlay(pcols,num_rrtmg_levs) )
+cam/src/physics/rrtmg/rrtmg_state.F90:108:    allocate( rstate%tlev(pcols,num_rrtmg_levs+1) )
+cam/src/physics/rrtmg/rrtmg_state.F90:116:       tint(i,1) = pstate%t(i,1)
+cam/src/physics/rrtmg/rrtmg_state.F90:120:          tint(i,k) = pstate%t(i,k) - dy * (pstate%t(i,k) - pstate%t(i,k-1))
+cam/src/physics/rrtmg/rrtmg_state.F90:131:       rstate%tlay(:ncol,k) = pstate%t(:ncol,kk)
+cam/src/physics/rrtmg/rrtmg_state.F90:132:       rstate%tlev(:ncol,k) = tint(:ncol,kk)
+cam/src/physics/rrtmg/rrtmg_state.F90:138:    rstate%tlev(:ncol,num_rrtmg_levs+1) = tint(:ncol,pverp)
+cam/src/physics/rrtmg/rrtmg_state.F90:264:    deallocate(rstate%tlay)
+cam/src/physics/rrtmg/rrtmg_state.F90:265:    deallocate(rstate%tlev)
+cam/src/physics/rrtmg/radsw.F90:340:   call CmpDayNite(r_state%tlay,   tlay,   Nday, IdxDay, Nnite, IdxNite, 1, pcols, 1, rrtmg_levs)
+cam/src/physics/rrtmg/radsw.F90:341:   call CmpDayNite(r_state%tlev,   tlev,   Nday, IdxDay, Nnite, IdxNite, 1, pcols, 1, rrtmg_levs+1)
+cam/src/physics/rrtmg/radlw.F90:185:   tsfc(:ncol) = r_state%tlev(:ncol,rrtmg_levs+1)
+cam/src/physics/rrtmg/radlw.F90:192:        r_state%pmidmb  ,r_state%pintmb  ,r_state%tlay    ,r_state%tlev    ,tsfc    ,r_state%h2ovmr, &
+cam/src/physics/carma/models/cirrus_dust/carma_model_mod.F90:2358:    if (abs((totalMass - state%tw_cur(icol))) / state%tw_cur(icol) > 1e14_f) then
+cam/src/physics/carma/models/cirrus_dust/carma_model_mod.F90:2361:              &WARNING Total water not conserved, ", totalMass, state%tw_cur, &
+cam/src/physics/carma/models/cirrus_dust/carma_model_mod.F90:2362:              (totalMass - state%tw_cur(icol)), &
+cam/src/physics/carma/models/cirrus_dust/carma_model_mod.F90:2363:              (totalMass - state%tw_cur(icol)) / state%tw_cur(icol)
+cam/src/physics/carma/models/cirrus_dust/carma_model_mod.F90:2399:            write(LUNOPRT,*) "  state tw :  ", state%tw_cur(icol)
+cam/src/physics/carma/models/cirrus_dust/carma_cloudfraction.F90:124:      call aist_single(state%q(icol, iz, 1), state%t(icol, iz), state%pmid(icol, iz), &
+cam/src/physics/carma/models/cirrus/carma_model_mod.F90:2006:    if (abs((totalMass - state%tw_cur(icol))) / state%tw_cur(icol) > 1e14_f) then
+cam/src/physics/carma/models/cirrus/carma_model_mod.F90:2010:              totalMass, state%tw_cur, (totalMass - state%tw_cur(icol)), &
+cam/src/physics/carma/models/cirrus/carma_model_mod.F90:2011:              (totalMass - state%tw_cur(icol)) / state%tw_cur(icol)
+cam/src/physics/carma/models/cirrus/carma_model_mod.F90:2047:            write(LUNOPRT,*) "  state tw :  ", state%tw_cur(icol)
+cam/src/physics/carma/models/cirrus/carma_cloudfraction.F90:124:      call aist_single(state%q(icol, iz, 1), state%t(icol, iz), state%pmid(icol, iz), &
+cam/src/physics/carma/cam/carma_intr.F90:2092:    call clddiag( state%t, state%pmid, state%pdel, cmfdqr, evapc, cldn, cldc, clds, cme, evapr, prain, &
+cam/src/physics/carma/cam/carma_intr.F90:2159:              call wetdepa_v1(state%t, &
+cam/src/physics/simple/held_suarez_cam.F90:102:         state%u, state%v, state%t, ptend%u, ptend%v, ptend%s)
+cam/src/physics/simple/physpkg.F90:578:      dtcore(:ncol,k) = state%t(:ncol,k)
+cam/src/physics/simple/physpkg.F90:736:    call outfld('TEINP', state%te_ini, pcols, lchnk   )
+cam/src/physics/simple/physpkg.F90:737:    call outfld('TEFIX', state%te_cur, pcols, lchnk   )
+cam/src/physics/simple/physpkg.F90:741:      dtcore(:ncol,:pver) = (state%t(:ncol,:pver) - dtcore(:ncol,:pver))/ztodt
+cam/src/physics/simple/physpkg.F90:788:    teout = state%te_cur
+cam/src/physics/simple/kessler_cam.F90:134:      rho(:ncol,rk) = state%pmiddry(:ncol,k)/(rair*state%t(:ncol,k))
+cam/src/physics/simple/kessler_cam.F90:137:      th(:ncol,rk) = state%t(:ncol,k) / exner(:ncol,k)
+cam/src/physics/simple/kessler_cam.F90:188:      ptend%s(:ncol,k) = (th(:ncol,rk)*exner(:ncol,k) - state%t(:ncol,k)) * cpair / ztodt
+cam/src/physics/spcam/crmclouds_camaerosols.F90:216:   t      => state%t
+cam/src/physics/spcam/crmclouds_camaerosols.F90:494:      zheight(i,k) = zheight(i,k+1) + state%pdel(i,k)/state%pmid(i,k)*(rair*state%t(i,k)/gravit)
+cam/src/physics/spcam/spcam_drivers.F90:460:    call outfld('TEINP', state%te_ini, pcols, lchnk   )
+cam/src/physics/spcam/spcam_drivers.F90:461:    call outfld('TEFIX', state%te_cur, pcols, lchnk   )
+cam/src/physics/spcam/spcam_drivers.F90:465:       dtcore(:ncol,:pver) = (state%t(:ncol,:pver) - dtcore(:ncol,:pver))/(ztodt)
+cam/src/physics/spcam/spcam_drivers.F90:1800:    call cldefr(lchnk, ncol, cam_in%landfrac, state%t, rel, rei, state%ps, state%pmid, landm, cam_in%icefrac, cam_in%snowhland)
+cam/src/physics/spcam/ecpp/module_ecpp_ppdriver2.F90:874:           tcen_bar(pver-k+1)   = state%t(i,k)
+cam/src/physics/spcam/ecpp/module_ecpp_ppdriver2.F90:878:           rhocen_bar(pver-k+1) = state%pmiddry(i,k)/(287.0_r8*state%t(i,k))    
+cam/src/physics/cam/zm_conv_intr.F90:635:                    state%t       ,state%q(:,:,1),      prec    ,jctop   ,jcbot   , &
+cam/src/physics/cam/check_energy.F90:268:          se(i) = se(i) +         state%t(i,k)*cpairv_loc(i,k,lchnk)*state%pdel(i,k)/gravit
+cam/src/physics/cam/check_energy.F90:298:       state%te_ini(i) = se(i) + ke(i) + (latvap+latice)*wv(i) + latice*wl(i)
+cam/src/physics/cam/check_energy.F90:299:       state%tw_ini(i) = wv(i) + wl(i) + wi(i)
+cam/src/physics/cam/check_energy.F90:301:       state%te_cur(i) = state%te_ini(i)
+cam/src/physics/cam/check_energy.F90:302:       state%tw_cur(i) = state%tw_ini(i)
+cam/src/physics/cam/check_energy.F90:313:       call pbuf_set_field(pbuf, teout_idx, state%te_ini, col_type=col_type)
+cam/src/physics/cam/check_energy.F90:407:          se(i) = se(i) +         state%t(i,k)*cpairv_loc(i,k,lchnk)*state%pdel(i,k)/gravit
+cam/src/physics/cam/check_energy.F90:444:       te_dif(i) = te(i) - state%te_cur(i)
+cam/src/physics/cam/check_energy.F90:445:       tw_dif(i) = tw(i) - state%tw_cur(i)
+cam/src/physics/cam/check_energy.F90:456:       te_xpd(i) = state%te_cur(i) + te_tnd(i)*ztodt
+cam/src/physics/cam/check_energy.F90:457:       tw_xpd(i) = state%tw_cur(i) + tw_tnd(i)*ztodt
+cam/src/physics/cam/check_energy.F90:460:       te_rer(i) = (te_xpd(i) - te(i)) / state%te_cur(i)
+cam/src/physics/cam/check_energy.F90:465:    where (state%tw_cur(:ncol) > 0._r8)
+cam/src/physics/cam/check_energy.F90:466:       tw_rer(:ncol) = (tw_xpd(:ncol) - tw(:ncol)) / state%tw_cur(:ncol)
+cam/src/physics/cam/check_energy.F90:496:       state%te_cur(i) = te(i)
+cam/src/physics/cam/check_energy.F90:497:       state%tw_cur(i) = tw(i)
+cam/src/physics/cam/check_energy.F90:870:          se_tmp   =   cpair*state%t(i,k)                      *state%pdel(i,k)/gravit
+cam/src/physics/cam/physics_types.F90:398:       call physconst_update(state%q, state%t, state%lchnk, state%ncol, state%pdel, state%pdeldry)
+cam/src/physics/cam/physics_types.F90:413:          state%t(:ncol,k) = state%t(:ncol,k) + ptend%s(:ncol,k)*dt/cpairv_loc(:ncol,k,state%lchnk)
+cam/src/physics/cam/physics_types.F90:424:            state%t     , state%q(:,:,1), rairv_loc(:,:,state%lchnk), gravit  , zvirv              , &
+cam/src/physics/cam/physics_types.F90:428:          state%s(:ncol,k) = state%t(:ncol,k  )*cpairv_loc(:ncol,k,state%lchnk) &
+cam/src/physics/cam/physics_types.F90:537:    call shr_assert_in_domain(state%te_ini(:ncol),      is_nan=.false., &
+cam/src/physics/cam/physics_types.F90:538:         varname="state%te_ini",    msg=msg)
+cam/src/physics/cam/physics_types.F90:539:    call shr_assert_in_domain(state%te_cur(:ncol),      is_nan=.false., &
+cam/src/physics/cam/physics_types.F90:540:         varname="state%te_cur",    msg=msg)
+cam/src/physics/cam/physics_types.F90:541:    call shr_assert_in_domain(state%tw_ini(:ncol),      is_nan=.false., &
+cam/src/physics/cam/physics_types.F90:542:         varname="state%tw_ini",    msg=msg)
+cam/src/physics/cam/physics_types.F90:543:    call shr_assert_in_domain(state%tw_cur(:ncol),      is_nan=.false., &
+cam/src/physics/cam/physics_types.F90:544:         varname="state%tw_cur",    msg=msg)
+cam/src/physics/cam/physics_types.F90:547:    call shr_assert_in_domain(state%t(:ncol,:),         is_nan=.false., &
+cam/src/physics/cam/physics_types.F90:548:         varname="state%t",         msg=msg)
+cam/src/physics/cam/physics_types.F90:611:    call shr_assert_in_domain(state%te_ini(:ncol),      lt=posinf_r8, gt=neginf_r8, &
+cam/src/physics/cam/physics_types.F90:612:         varname="state%te_ini",    msg=msg)
+cam/src/physics/cam/physics_types.F90:613:    call shr_assert_in_domain(state%te_cur(:ncol),      lt=posinf_r8, gt=neginf_r8, &
+cam/src/physics/cam/physics_types.F90:614:         varname="state%te_cur",    msg=msg)
+cam/src/physics/cam/physics_types.F90:615:    call shr_assert_in_domain(state%tw_ini(:ncol),      lt=posinf_r8, gt=neginf_r8, &
+cam/src/physics/cam/physics_types.F90:616:         varname="state%tw_ini",    msg=msg)
+cam/src/physics/cam/physics_types.F90:617:    call shr_assert_in_domain(state%tw_cur(:ncol),      lt=posinf_r8, gt=neginf_r8, &
+cam/src/physics/cam/physics_types.F90:618:         varname="state%tw_cur",    msg=msg)
+cam/src/physics/cam/physics_types.F90:621:    call shr_assert_in_domain(state%t(:ncol,:),         lt=posinf_r8, gt=0._r8, &
+cam/src/physics/cam/physics_types.F90:622:         varname="state%t",         msg=msg)
+cam/src/physics/cam/physics_types.F90:1265:            state%t     , state%zi      , state%zm   , ncol)
+cam/src/physics/cam/physics_types.F90:1540:  allocate(state%t(psetcols,pver), stat=ierr)
+cam/src/physics/cam/physics_types.F90:1541:  if ( ierr /= 0 ) call endrun('physics_state_alloc error: allocation error for state%t')
+cam/src/physics/cam/physics_types.F90:1603:  allocate(state%te_ini(psetcols), stat=ierr)
+cam/src/physics/cam/physics_types.F90:1604:  if ( ierr /= 0 ) call endrun('physics_state_alloc error: allocation error for state%te_ini')
+cam/src/physics/cam/physics_types.F90:1606:  allocate(state%te_cur(psetcols), stat=ierr)
+cam/src/physics/cam/physics_types.F90:1607:  if ( ierr /= 0 ) call endrun('physics_state_alloc error: allocation error for state%te_cur')
+cam/src/physics/cam/physics_types.F90:1609:  allocate(state%tw_ini(psetcols), stat=ierr)
+cam/src/physics/cam/physics_types.F90:1610:  if ( ierr /= 0 ) call endrun('physics_state_alloc error: allocation error for state%tw_ini')
+cam/src/physics/cam/physics_types.F90:1612:  allocate(state%tw_cur(psetcols), stat=ierr)
+cam/src/physics/cam/physics_types.F90:1613:  if ( ierr /= 0 ) call endrun('physics_state_alloc error: allocation error for state%tw_cur')
+cam/src/physics/cam/physics_types.F90:1631:  state%t(:,:) = inf
+cam/src/physics/cam/physics_types.F90:1654:  state%te_ini(:) = inf
+cam/src/physics/cam/physics_types.F90:1655:  state%te_cur(:) = inf
+cam/src/physics/cam/physics_types.F90:1656:  state%tw_ini(:) = inf
+cam/src/physics/cam/physics_types.F90:1657:  state%tw_cur(:) = inf
+cam/src/physics/cam/physics_types.F90:1691:  deallocate(state%t, stat=ierr)
+cam/src/physics/cam/physics_types.F90:1692:  if ( ierr /= 0 ) call endrun('physics_state_dealloc error: deallocation error for state%t')
+cam/src/physics/cam/physics_types.F90:1754:  deallocate(state%te_ini, stat=ierr)
+cam/src/physics/cam/physics_types.F90:1755:  if ( ierr /= 0 ) call endrun('physics_state_dealloc error: deallocation error for state%te_ini')
+cam/src/physics/cam/physics_types.F90:1757:  deallocate(state%te_cur, stat=ierr)
+cam/src/physics/cam/physics_types.F90:1758:  if ( ierr /= 0 ) call endrun('physics_state_dealloc error: deallocation error for state%te_cur')
+cam/src/physics/cam/physics_types.F90:1760:  deallocate(state%tw_ini, stat=ierr)
+cam/src/physics/cam/physics_types.F90:1761:  if ( ierr /= 0 ) call endrun('physics_state_dealloc error: deallocation error for state%tw_ini')
+cam/src/physics/cam/physics_types.F90:1763:  deallocate(state%tw_cur, stat=ierr)
+cam/src/physics/cam/physics_types.F90:1764:  if ( ierr /= 0 ) call endrun('physics_state_dealloc error: deallocation error for state%tw_cur')
+cam/src/physics/cam/trb_mtn_stress_cam.F90:149:       state%u    , state%v  , state%t , state%pmid , & 
+cam/src/physics/cam/cloud_diagnostics.F90:393:             iwc(i,k)       = allcld_ice(i,k) * state%pmid(i,k) / (287.15_r8*state%t(i,k))
+cam/src/physics/cam/cloud_diagnostics.F90:394:             lwc(i,k)       = allcld_liq(i,k) * state%pmid(i,k) / (287.15_r8*state%t(i,k))
+cam/src/physics/cam/nucleate_ice_cam.F90:483:   t     => state%t
+cam/src/physics/cam/cam_diagnostics.F90:866:        dtcond(i,k,lchnk) = state%t(i,k)
+cam/src/physics/cam/cam_diagnostics.F90:882:        t_ttend(:ncol,:) = state%t(:ncol,:)
+cam/src/physics/cam/cam_diagnostics.F90:938:    call outfld('T       ',state%t , pcols   ,lchnk   )
+cam/src/physics/cam/cam_diagnostics.F90:967:          extrapolate='Z', ln_interp=.true., ps=state%ps, phis=state%phis, tbot=state%t(:,pver))
+cam/src/physics/cam/cam_diagnostics.F90:972:          extrapolate='Z', ln_interp=.true., ps=state%ps, phis=state%phis, tbot=state%t(:,pver))
+cam/src/physics/cam/cam_diagnostics.F90:977:          extrapolate='Z', ln_interp=.true., ps=state%ps, phis=state%phis, tbot=state%t(:,pver))
+cam/src/physics/cam/cam_diagnostics.F90:1007:    ftem(:ncol,:) = state%v(:ncol,:)*state%t(:ncol,:)
+cam/src/physics/cam/cam_diagnostics.F90:1039:    ftem(:ncol,:) = state%omega(:ncol,:)*state%t(:ncol,:)
+cam/src/physics/cam/cam_diagnostics.F90:1061:    call cpslec(ncol, state%pmid, state%phis, state%ps, state%t, psl, gravit, rair)
+cam/src/physics/cam/cam_diagnostics.F90:1067:      call vertinterp(ncol, pcols, pver, state%pmid, 85000._r8, state%t, p_surf, &
+cam/src/physics/cam/cam_diagnostics.F90:1072:      call vertinterp(ncol, pcols, pver, state%pmid, 50000._r8, state%t, p_surf, &
+cam/src/physics/cam/cam_diagnostics.F90:1077:      call vertinterp(ncol, pcols, pver, state%pmid, 40000._r8, state%t, p_surf, &
+cam/src/physics/cam/cam_diagnostics.F90:1082:      call vertinterp(ncol, pcols, pver, state%pmid, 30000._r8, state%t, p_surf)
+cam/src/physics/cam/cam_diagnostics.F90:1086:      call vertinterp(ncol, pcols, pver, state%pmid, 20000._r8, state%t, p_surf)
+cam/src/physics/cam/cam_diagnostics.F90:1126:    ftem(:ncol,:) = state%t(:ncol,:)*state%t(:ncol,:)
+cam/src/physics/cam/cam_diagnostics.F90:1145:      call vertinterp(ncol, pcols, pver, state%pmid, 100000._r8, state%t, p_surf_t(:,surf_100000))
+cam/src/physics/cam/cam_diagnostics.F90:1151:      call vertinterp(ncol, pcols, pver, state%pmid, 92500._r8, state%t, p_surf_t(:,surf_092500))
+cam/src/physics/cam/cam_diagnostics.F90:1175:      call vertinterp(ncol, pcols, pver, state%pmid, 85000._r8, state%t, p_surf_t(:,surf_085000))
+cam/src/physics/cam/cam_diagnostics.F90:1192:      call vertinterp(ncol, pcols, pver, state%pmid, 70000._r8, state%t, p_surf_t(:,surf_070000))
+cam/src/physics/cam/cam_diagnostics.F90:1212:      call vertinterp(ncol, pcols, pver, state%pmid, 1000._r8, state%t, p_surf)
+cam/src/physics/cam/cam_diagnostics.F90:1315:          call qsat(state%t(:ncol,:), state%pmid(:ncol,:), &
+cam/src/physics/cam/cam_diagnostics.F90:1325:      call qsat_water (state%t(:ncol,:), state%pmid(:ncol,:), &
+cam/src/physics/cam/cam_diagnostics.F90:1333:          esi(i,k)=svp_ice(state%t(i,k))
+cam/src/physics/cam/cam_diagnostics.F90:1345:          if (state%t(i,k) .gt. 273) then
+cam/src/physics/cam/cam_diagnostics.F90:1381:    ftem(:ncol,:) = (cpair*state%t(:ncol,:) +  ftem1(:ncol,:) + latvap*state%q(:ncol,:,1) + &
+cam/src/physics/cam/cam_diagnostics.F90:1395:        call vertinterp(ncol, pcols, pver, state%pmid, 100000._r8, state%t, p_surf_t(:, surf_100000))
+cam/src/physics/cam/cam_diagnostics.F90:1402:        call vertinterp(ncol, pcols, pver, state%pmid, 92500._r8, state%t, p_surf_t(:, surf_092500))
+cam/src/physics/cam/cam_diagnostics.F90:1436:        call vertinterp(ncol, pcols, pver, state%pmid, 85000._r8, state%t, p_surf_t(:, surf_085000))
+cam/src/physics/cam/cam_diagnostics.F90:1451:        call vertinterp(ncol, pcols, pver, state%pmid, 70000._r8, state%t, p_surf_t(:, surf_070000))
+cam/src/physics/cam/cam_diagnostics.F90:1640:          dtcond(i,k,lchnk) = (state%t(i,k) - dtcond(i,k,lchnk))*rtdt
+cam/src/physics/cam/cam_diagnostics.F90:1983:    call outfld('TAP', state%t, pcols, lchnk   )
+cam/src/physics/cam/cam_diagnostics.F90:2007:    ftem3(:ncol,:) = (state%t(:ncol,:) - t_ttend(:ncol,:))/ztodt
+cam/src/physics/cam/cam_diagnostics.F90:2011:    t_ttend(:ncol,:) = state%t(:ncol,:)
+cam/src/physics/cam/cam_diagnostics.F90:2175:    call outfld('TBP', state%t, pcols, lchnk   )
+cam/src/physics/cam/phys_debug.F90:167:   call outfld('T_'//trim(tag),  state%t,        pcols, lchnk)
+cam/src/physics/cam/convect_shallow.F90:567:                   pblh         ,  state%t      ,  state%q    ,  ptend_loc%s ,  ptend_loc%q ,   &
+cam/src/physics/cam/convect_shallow.F90:593:                               state%t   , state%s , state%q(:,:,:) ,                                                   &
+cam/src/physics/cam/hetfrz_classnuc_cam.F90:639:      t     => state%t,                 &
+cam/src/physics/cam/cospsimulator_intr.F90:1744:    ! I do not need to define these variables.  I can use them as is, e.g., state%t
+cam/src/physics/cam/cospsimulator_intr.F90:1747:    !state%t     ! temperature (K)
+cam/src/physics/cam/cospsimulator_intr.F90:1859:    call qsat_water(state%t(1:ncol,1:pver), state%pmid(1:ncol,1:pver), &
+cam/src/physics/cam/cospsimulator_intr.F90:2074:    cospstateIN%at                             = state%t(1:ncol,1:pver) 
+cam/src/physics/cam/vertical_diffusion.F90:870:        tint(i,k)  = 0.5_r8 * ( state%t(i,k) + state%t(i,k-1) )
+cam/src/physics/cam/vertical_diffusion.F90:873:  tint(:ncol,pver+1) = state%t(:ncol,pver)
+cam/src/physics/cam/vertical_diffusion.F90:876:  call ubc_get_vals( state%lchnk, ncol, state%pint, state%zi, state%t, state%q, state%omega, state%phis, &
+cam/src/physics/cam/vertical_diffusion.F90:888:     tint(:ncol,1) = state%t(:ncol,1)
+cam/src/physics/cam/vertical_diffusion.F90:965:  th(:ncol,:pver) = state%t(:ncol,:pver) * state%exner(:ncol,:pver)
+cam/src/physics/cam/vertical_diffusion.F90:990:          th        , state%t  , state%q , state%zm , state%zi, &
+cam/src/physics/cam/vertical_diffusion.F90:1009:     call calc_ustar( ncol, state%t(:ncol,pver), state%pmid(:ncol,pver), &
+cam/src/physics/cam/vertical_diffusion.F90:1060:     call qsat(state%t(:ncol,:), state%pmid(:ncol,:), &
+cam/src/physics/cam/vertical_diffusion.F90:1072:     call outfld( 't_pre_PBL    ', state%t,                   pcols, lchnk )
+cam/src/physics/cam/vertical_diffusion.F90:1124:          p    , state%t      , rhoi, ztodt         , taux          , &
+cam/src/physics/cam/vertical_diffusion.F90:1157:          p_dry , state%t      , rhoi_dry,  ztodt         , taux          , &
+cam/src/physics/cam/vertical_diffusion.F90:1325:           t_pro(i,k)  = state%t(i,k)          + (1._r8/cpair)*ptend%s(i,k) * ztodt
+cam/src/physics/cam/vertical_diffusion.F90:1356:     tten(:ncol,:pver)        = ( t_aftPBL(:ncol,:pver)    - state%t(:ncol,:pver) )              * rztodt
+cam/src/physics/cam/tidal_diag.F90:130:       call outfld( 'T_24_SIN', state%t(:ncol,:)*dcoef(1), ncol, lchnk )
+cam/src/physics/cam/tidal_diag.F90:131:       call outfld( 'T_24_COS', state%t(:ncol,:)*dcoef(2), ncol, lchnk )
+cam/src/physics/cam/tidal_diag.F90:134:       call outfld( 'T_12_SIN', state%t(:ncol,:)*dcoef(3), ncol, lchnk )
+cam/src/physics/cam/tidal_diag.F90:135:       call outfld( 'T_12_COS', state%t(:ncol,:)*dcoef(4), ncol, lchnk )
+cam/src/physics/cam/tidal_diag.F90:138:       call outfld( 'T_08_SIN', state%t(:ncol,:)*dcoef(5), ncol, lchnk )
+cam/src/physics/cam/tidal_diag.F90:139:       call outfld( 'T_08_COS', state%t(:ncol,:)*dcoef(6), ncol, lchnk )
+cam/src/physics/cam/micro_mg_cam.F90:2508:        (rair*state%t(:ncol,top_lev:))
+cam/src/physics/cam/physpkg.F90:1542:    call pbuf_set_field(pbuf, teout_idx, state%te_cur, (/1,itim_old/),(/pcols,1/))
+cam/src/physics/cam/physpkg.F90:1601:       dtcore(:ncol,k) = state%t(:ncol,k)
+cam/src/physics/cam/physpkg.F90:1878:    call outfld('TEINP', state%te_ini, pcols, lchnk   )
+cam/src/physics/cam/physpkg.F90:1879:    call outfld('TEFIX', state%te_cur, pcols, lchnk   )
+cam/src/physics/cam/physpkg.F90:1883:       dtcore(:ncol,:pver) = (state%t(:ncol,:pver) - dtcore(:ncol,:pver))/ztodt
+cam/src/physics/cam/dadadj_cam.F90:114:    ptend%s(:ncol,:pver)   = state%t(:ncol,:pver)
+cam/src/physics/cam/dadadj_cam.F90:131:    ptend%s(:ncol,:)   = (ptend%s(:ncol,:)   - state%t(:ncol,:)  )/dt * cpairv(:ncol,:,lchnk)
+cam/src/physics/cam/unicon_cam.F90:1112:      t0(:iend,k)         = state%t(:iend,k_inv)
+cam/src/physics/cam/macrop_driver.F90:659:     tcwat(:ncol,:) = state%t(:ncol,:)
+cam/src/physics/cam/tropopause.F90:575:             shybrid_temp = ALPHA * pstate%t(i,k) - Log10(pstate%pmid(i,k))
+cam/src/physics/cam/tropopause.F90:654:        stobie(:) = ALPHA * pstate%t(i,:) - log10(pstate%pmid(i, :))
+cam/src/physics/cam/tropopause.F90:850:        call twmo(pstate%t(i, :), pstate%pmid(i, :), plimu, pliml, gam, tP)
+cam/src/physics/cam/tropopause.F90:933:          dt = pstate%t(i, k) - pstate%t(i, k-1)
+cam/src/physics/cam/tropopause.F90:946:              dt = pstate%t(i, k) - pstate%t(i, k2)
+cam/src/physics/cam/tropopause.F90:1034:          if (pstate%t(i, k) < tmin) then
+cam/src/physics/cam/tropopause.F90:1036:            tmin = pstate%t(i,k)
+cam/src/physics/cam/tropopause.F90:1051:            f0 = pstate%t(i, tropLev(i)-1)
+cam/src/physics/cam/tropopause.F90:1052:            f1 = pstate%t(i, tropLev(i))
+cam/src/physics/cam/tropopause.F90:1053:            f2 = pstate%t(i, tropLev(i)+1)
+cam/src/physics/cam/tropopause.F90:1323:      tropT = pstate%t(icol, tropLev)
+cam/src/physics/cam/tropopause.F90:1329:        dTdlogP = (pstate%t(icol, tropLev) - pstate%t(icol, tropLev - 1)) / & 
+cam/src/physics/cam/tropopause.F90:1331:        tropT = pstate%t(icol, tropLev) + (log(tropP) - log(pstate%pmid(icol, tropLev))) * dTdlogP
+cam/src/physics/cam/tropopause.F90:1337:        dTdlogP = (pstate%t(icol, tropLev + 1) - pstate%t(icol, tropLev)) / &
+cam/src/physics/cam/tropopause.F90:1339:        tropT = pstate%t(icol, tropLev) + (log(tropP) - log(pstate%pmid(icol, tropLev))) * dTdlogP
+cam/src/physics/cam/eddy_diff_cam.F90:364:       pcols    , pver        , state%ncol       , state%t    , tint, state%q(:,:,1) , ztodt   , &
+cam/src/physics/cam/aer_rad_props.F90:204:   call qsat(state%t(1:ncol,1:pver), state%pmid(1:ncol,1:pver), &
+cam/src/physics/cam/aer_rad_props.F90:385:      call qsat(state%t(1:ncol,1:pver), state%pmid(1:ncol,1:pver), &
+cam/src/physics/cam/ndrop.F90:439:   temp     => state%t
+cam/src/physics/cam/ndrop.F90:1801:   tair  => state%t
+cam/src/physics/cam/modal_aer_opt.F90:618:   air_density(:ncol,:) = state%pmid(:ncol,:)/(rair*state%t(:ncol,:))
+cam/src/physics/cam/beljaars_drag_cam.F90:144:       state%u    , state%v  , state%t , state%pmid , & 
+cam/src/physics/cam/radiation_data.F90:596:    call outfld(temp_fldn,   state%t,               pcols, lchnk   )
+cam/src/physics/cam/subcol_utils.F90.in:397:      call subcol_state_field_copy(state%te_ini,    state_sc, state_sc%te_ini)
+cam/src/physics/cam/subcol_utils.F90.in:398:      call subcol_state_field_copy(state%te_cur,    state_sc, state_sc%te_cur)
+cam/src/physics/cam/subcol_utils.F90.in:399:      call subcol_state_field_copy(state%tw_ini,    state_sc, state_sc%tw_ini)
+cam/src/physics/cam/subcol_utils.F90.in:400:      call subcol_state_field_copy(state%tw_cur,    state_sc, state_sc%tw_cur)
+cam/src/physics/cam/subcol_utils.F90.in:401:      call subcol_state_field_copy(state%t,         state_sc, state_sc%t)
+cam/src/physics/cam/rk_stratiform.F90:625:      tcwat(:ncol,:) = state%t(:ncol,:)
+cam/src/physics/camrt/radiation.F90:1091:                 lwupcgs, state%t, sp_hum, o3, pbr, &
+cam/src/dynamics/se/dycore/prim_advection_mod.F90:994:        internal_energy_star = internal_energy_star*elem(ie)%state%t(:,:,:,np1)
+cam/src/dynamics/se/dycore/prim_advection_mod.F90:1048:        elem(ie)%state%t(:,:,:,np1)=internal_energy_star/ttmp(:,:,:,2)
+cam/src/dynamics/se/dycore/prim_advection_mod.F90:1050:        internal_energy_star(:,:,:)=elem(ie)%state%t(:,:,:,np1)*dp_star_moist
+cam/src/dynamics/se/dycore/prim_advection_mod.F90:1052:        elem(ie)%state%t(:,:,:,np1)=internal_energy_star*dp_inv
+cam/src/dynamics/se/dycore/prim_advection_mod.F90:1068:      elem(ie)%state%t(:,:,:,np1) = &
+cam/src/dynamics/se/dycore/prim_advection_mod.F90:1069:           ( elem(ie)%state%t(:,:,:,np1) - ( (elem(ie)%state%v(:,:,1,:,np1)**2 + &
+cam/src/control/camsrfexch.F90:518:      cam_out%tbot(i)  = state%t(i,pver)
+cam/src/control/camsrfexch.F90:519:      cam_out%thbot(i) = state%t(i,pver) * state%exner(i,pver)
+cam/src/chemistry/utils/modal_aero_calcsize.F90:404:   t    => state%t
+cam/src/chemistry/utils/modal_aero_wateruptake.F90:325:   t      => state%t
+cam/src/chemistry/aerosol/wetdep.F90:153:  call clddiag( state%t,     state%pmid,   state%pdel,   inputs%cmfdqr, inputs%evapc, &
+cam/src/chemistry/modal_aero/modal_aero_convproc.F90:540:                     state%t,    state%pmid, state%pdel, qaa,        &   
+cam/src/chemistry/modal_aero/modal_aero_convproc.F90:765:                     state%t,    state%pmid, state%pdel, qaa,        &   
+cam/src/chemistry/modal_aero/aero_model.F90:746:                  ustar,ram1in,ram1,state%t(:,pver),state%pmid(:,pver),&
+cam/src/chemistry/modal_aero/aero_model.F90:761:    tvs(:ncol,:) = state%t(:ncol,:)!*(1+state%q(:ncol,k)
+cam/src/chemistry/modal_aero/aero_model.F90:762:    rho(:ncol,:)=  state%pmid(:ncol,:)/(rair*state%t(:ncol,:))
+cam/src/chemistry/modal_aero/aero_model.F90:772:    call modal_aero_depvel_part( ncol,state%t(:,:), state%pmid(:,:), ram1, fv,  &
+cam/src/chemistry/modal_aero/aero_model.F90:776:    call modal_aero_depvel_part( ncol,state%t(:,:), state%pmid(:,:), ram1, fv,  &
+cam/src/chemistry/modal_aero/aero_model.F90:797:             call modal_aero_depvel_part( ncol, state%t(:,:), state%pmid(:,:), ram1, fv,  & 
+cam/src/chemistry/modal_aero/aero_model.F90:801:             call modal_aero_depvel_part( ncol, state%t(:,:), state%pmid(:,:), ram1, fv,  & 
+cam/src/chemistry/modal_aero/aero_model.F90:857:                     ncol,             dt,       state%pint(:,:), state%pmid, state%pdel, state%t , &
+cam/src/chemistry/modal_aero/aero_model.F90:892:                     ncol,             dt,       state%pint(:,:), state%pmid, state%pdel, state%t , &
+cam/src/chemistry/modal_aero/aero_model.F90:924:                     ncol,             dt,       state%pint(:,:), state%pmid, state%pdel, state%t , &
+cam/src/chemistry/mozart/mo_waccm_hrates.F90:205:         ele_temp_fld => state%t
+cam/src/chemistry/mozart/mo_waccm_hrates.F90:206:         ion_temp_fld => state%t
+cam/src/chemistry/mozart/mo_waccm_hrates.F90:291:      call setinv( invariants, state%t, h2ovmr, vmr, state%pmid, ncol, lchnk, pbuf )
+cam/src/chemistry/mozart/mo_waccm_hrates.F90:306:      call setrxt_hrates( reaction_rates, state%t, invariants(1,1,indexm), ncol, kbot_hrates )
+cam/src/chemistry/mozart/mo_waccm_hrates.F90:307:      call usrrxt_hrates( reaction_rates, state%t, ele_temp_fld, ion_temp_fld, &
+cam/src/chemistry/mozart/mo_waccm_hrates.F90:361:            tline(:)    = state%t(i,:)
+cam/src/chemistry/mozart/mo_waccm_hrates.F90:431:      call aurora( state%t, mbar, rlats, &
+cam/src/chemistry/mozart/chemistry.F90:1353:    call neu_wetdep_tend(lchnk,ncol,state%q,state%pmid,state%pdel,state%zi,state%t,dt, &
+cam/src/chemistry/mozart/chemistry.F90:1368:                          state%t, state%pmid, state%pdel, state%pint, &
+cam/src/chemistry/bulk_aero/aero_model.F90:453:                  ustar,ram1in,ram1,state%t(:,pver),state%pmid(:,pver),&
+cam/src/chemistry/bulk_aero/aero_model.F90:470:    tvs(:ncol,:) = state%t(:ncol,:)
+cam/src/chemistry/bulk_aero/aero_model.F90:471:    rho(:ncol,:) = state%pmid(:ncol,:)/(rair*state%t(:ncol,:))
+cam/src/chemistry/bulk_aero/aero_model.F90:475:       call sslt_depvel( state%t(:,:), state%pmid(:,:), state%q(:,:,1), ram1, fv, ncol, lchnk, &
+cam/src/chemistry/bulk_aero/aero_model.F90:479:       call dust_depvel( state%t(:,:), state%pmid(:,:),                 ram1, fv, ncol, &
+cam/src/chemistry/bulk_aero/aero_model.F90:506:               ncol,             dt,       state%pint(:,:), state%pmid, state%pdel, state%t , &
+cam/src/chemistry/bulk_aero/aero_model.F90:624:       call wetdepa_v1( state%t, state%pmid, state%q(:,:,1), state%pdel, &
+pop/externals/MARBL/src/marbl_co2calc_mod.F90:151:    ! set here to avoid having co2calc_state%temp and %salt uninitialized
+pop/externals/MARBL/src/marbl_co2calc_mod.F90:291:    ! set here to avoid having co2calc_state%temp and %salt uninitialized
+./pop/externals/MARBL/src/marbl_co2calc_mod.F90:151:    ! set here to avoid having co2calc_state%temp and %salt uninitialized
+./pop/externals/MARBL/src/marbl_co2calc_mod.F90:291:    ! set here to avoid having co2calc_state%temp and %salt uninitialized
+./cam/doc/ChangeLog:109160:One-line Summary: Patched FV communicator bug in coupled mode; T3 reset to phys_state%t in p_d_coupling; config. improvments
+./cam/doc/ChangeLog:109196:		dp_coupling.F90 :  t3 reset to phys_state%t in p_d_coupling
+./cam/src/physics/waccm/nlte_lw.F90:293:    call nlte_fomichev_calc (lchnk,ncol,state%pmid,state%pint,state%t, &
+./cam/src/physics/waccm/nlte_lw.F90:297:    call nocooling (ncol, state%t, state%pmid, xnommr,xommr,xo2mmr,xo3mmr,xn2mmr,nocool)
+./cam/src/physics/waccm/nlte_lw.F90:300:    call o3pcooling (ncol, state%t, xommr, o3pcool)
+./cam/src/physics/waccm/iondrag.F90:751:          tn (i,k) = state%t(i,k)
+./cam/src/physics/waccm/iondrag.F90:1320:       max_q      = 100._r8*maxval( abs( qjoule(:ncol,ntop_lev:nbot_lev) )/state%t(:ncol,ntop_lev:nbot_lev) )
+./cam/src/physics/waccm/iondrag.F90:1321:       max_ind(:) = maxloc( abs( qjoule(:ncol,ntop_lev:nbot_lev) )/state%t(:ncol,ntop_lev:nbot_lev) )
+./cam/src/physics/waccm/iondrag.F90:1330:          write(iulog,*) 'jouleheat_tend: dt,t,max% dt/t = ',qjoule(i,k)/cpairv(i,k,lchnk),state%t(i,k),max_q, &
+./cam/src/physics/waccmx/steady_state_tei.F90:149:       tn(1:pver,i) = state%t(i,pver:1:-1)
+./cam/src/physics/waccmx/majorsp_diffusion.F90:178:       call ubc_get_vals( lchnk, ncol, state%pint, state%zi, state%t, state%q, &
+./cam/src/physics/waccmx/majorsp_diffusion.F90:193:                  state%t    ,ptend%q    ,state%pmid ,state%pint ,             &
+./cam/src/physics/waccmx/ion_electron_temp.F90:540:    tN   => state%t(1:ncol,1:pver)
+./cam/src/physics/waccmx/ion_electron_temp.F90:542:    tNInt => istate%tNInt(1:ncol,1:pverp)
+./cam/src/physics/waccmx/ion_electron_temp.F90:1082:    tN    => state%t(1:ncol,1:pver)
+./cam/src/physics/waccmx/ion_electron_temp.F90:1088:    tNInt   => istate%tNInt(1:ncol,1:pverp)        
+./cam/src/physics/rrtmg/rrtmg_state.F90:107:    allocate( rstate%tlay(pcols,num_rrtmg_levs) )
+./cam/src/physics/rrtmg/rrtmg_state.F90:108:    allocate( rstate%tlev(pcols,num_rrtmg_levs+1) )
+./cam/src/physics/rrtmg/rrtmg_state.F90:116:       tint(i,1) = pstate%t(i,1)
+./cam/src/physics/rrtmg/rrtmg_state.F90:120:          tint(i,k) = pstate%t(i,k) - dy * (pstate%t(i,k) - pstate%t(i,k-1))
+./cam/src/physics/rrtmg/rrtmg_state.F90:131:       rstate%tlay(:ncol,k) = pstate%t(:ncol,kk)
+./cam/src/physics/rrtmg/rrtmg_state.F90:132:       rstate%tlev(:ncol,k) = tint(:ncol,kk)
+./cam/src/physics/rrtmg/rrtmg_state.F90:138:    rstate%tlev(:ncol,num_rrtmg_levs+1) = tint(:ncol,pverp)
+./cam/src/physics/rrtmg/rrtmg_state.F90:264:    deallocate(rstate%tlay)
+./cam/src/physics/rrtmg/rrtmg_state.F90:265:    deallocate(rstate%tlev)
+./cam/src/physics/rrtmg/radsw.F90:340:   call CmpDayNite(r_state%tlay,   tlay,   Nday, IdxDay, Nnite, IdxNite, 1, pcols, 1, rrtmg_levs)
+./cam/src/physics/rrtmg/radsw.F90:341:   call CmpDayNite(r_state%tlev,   tlev,   Nday, IdxDay, Nnite, IdxNite, 1, pcols, 1, rrtmg_levs+1)
+./cam/src/physics/rrtmg/radlw.F90:185:   tsfc(:ncol) = r_state%tlev(:ncol,rrtmg_levs+1)
+./cam/src/physics/rrtmg/radlw.F90:192:        r_state%pmidmb  ,r_state%pintmb  ,r_state%tlay    ,r_state%tlev    ,tsfc    ,r_state%h2ovmr, &
+./cam/src/physics/carma/models/cirrus_dust/carma_model_mod.F90:2358:    if (abs((totalMass - state%tw_cur(icol))) / state%tw_cur(icol) > 1e14_f) then
+./cam/src/physics/carma/models/cirrus_dust/carma_model_mod.F90:2361:              &WARNING Total water not conserved, ", totalMass, state%tw_cur, &
+./cam/src/physics/carma/models/cirrus_dust/carma_model_mod.F90:2362:              (totalMass - state%tw_cur(icol)), &
+./cam/src/physics/carma/models/cirrus_dust/carma_model_mod.F90:2363:              (totalMass - state%tw_cur(icol)) / state%tw_cur(icol)
+./cam/src/physics/carma/models/cirrus_dust/carma_model_mod.F90:2399:            write(LUNOPRT,*) "  state tw :  ", state%tw_cur(icol)
+./cam/src/physics/carma/models/cirrus_dust/carma_cloudfraction.F90:124:      call aist_single(state%q(icol, iz, 1), state%t(icol, iz), state%pmid(icol, iz), &
+./cam/src/physics/carma/models/cirrus/carma_model_mod.F90:2006:    if (abs((totalMass - state%tw_cur(icol))) / state%tw_cur(icol) > 1e14_f) then
+./cam/src/physics/carma/models/cirrus/carma_model_mod.F90:2010:              totalMass, state%tw_cur, (totalMass - state%tw_cur(icol)), &
+./cam/src/physics/carma/models/cirrus/carma_model_mod.F90:2011:              (totalMass - state%tw_cur(icol)) / state%tw_cur(icol)
+./cam/src/physics/carma/models/cirrus/carma_model_mod.F90:2047:            write(LUNOPRT,*) "  state tw :  ", state%tw_cur(icol)
+./cam/src/physics/carma/models/cirrus/carma_cloudfraction.F90:124:      call aist_single(state%q(icol, iz, 1), state%t(icol, iz), state%pmid(icol, iz), &
+./cam/src/physics/carma/cam/carma_intr.F90:2092:    call clddiag( state%t, state%pmid, state%pdel, cmfdqr, evapc, cldn, cldc, clds, cme, evapr, prain, &
+./cam/src/physics/carma/cam/carma_intr.F90:2159:              call wetdepa_v1(state%t, &
+./cam/src/physics/simple/held_suarez_cam.F90:102:         state%u, state%v, state%t, ptend%u, ptend%v, ptend%s)
+./cam/src/physics/simple/physpkg.F90:578:      dtcore(:ncol,k) = state%t(:ncol,k)
+./cam/src/physics/simple/physpkg.F90:736:    call outfld('TEINP', state%te_ini, pcols, lchnk   )
+./cam/src/physics/simple/physpkg.F90:737:    call outfld('TEFIX', state%te_cur, pcols, lchnk   )
+./cam/src/physics/simple/physpkg.F90:741:      dtcore(:ncol,:pver) = (state%t(:ncol,:pver) - dtcore(:ncol,:pver))/ztodt
+./cam/src/physics/simple/physpkg.F90:788:    teout = state%te_cur
+./cam/src/physics/simple/kessler_cam.F90:134:      rho(:ncol,rk) = state%pmiddry(:ncol,k)/(rair*state%t(:ncol,k))
+./cam/src/physics/simple/kessler_cam.F90:137:      th(:ncol,rk) = state%t(:ncol,k) / exner(:ncol,k)
+./cam/src/physics/simple/kessler_cam.F90:188:      ptend%s(:ncol,k) = (th(:ncol,rk)*exner(:ncol,k) - state%t(:ncol,k)) * cpair / ztodt
+./cam/src/physics/spcam/crmclouds_camaerosols.F90:216:   t      => state%t
+./cam/src/physics/spcam/crmclouds_camaerosols.F90:494:      zheight(i,k) = zheight(i,k+1) + state%pdel(i,k)/state%pmid(i,k)*(rair*state%t(i,k)/gravit)
+./cam/src/physics/spcam/spcam_drivers.F90:460:    call outfld('TEINP', state%te_ini, pcols, lchnk   )
+./cam/src/physics/spcam/spcam_drivers.F90:461:    call outfld('TEFIX', state%te_cur, pcols, lchnk   )
+./cam/src/physics/spcam/spcam_drivers.F90:465:       dtcore(:ncol,:pver) = (state%t(:ncol,:pver) - dtcore(:ncol,:pver))/(ztodt)
+./cam/src/physics/spcam/spcam_drivers.F90:1800:    call cldefr(lchnk, ncol, cam_in%landfrac, state%t, rel, rei, state%ps, state%pmid, landm, cam_in%icefrac, cam_in%snowhland)
+./cam/src/physics/spcam/ecpp/module_ecpp_ppdriver2.F90:874:           tcen_bar(pver-k+1)   = state%t(i,k)
+./cam/src/physics/spcam/ecpp/module_ecpp_ppdriver2.F90:878:           rhocen_bar(pver-k+1) = state%pmiddry(i,k)/(287.0_r8*state%t(i,k))    
+./cam/src/physics/cam/zm_conv_intr.F90:635:                    state%t       ,state%q(:,:,1),      prec    ,jctop   ,jcbot   , &
+./cam/src/physics/cam/check_energy.F90:268:          se(i) = se(i) +         state%t(i,k)*cpairv_loc(i,k,lchnk)*state%pdel(i,k)/gravit
+./cam/src/physics/cam/check_energy.F90:298:       state%te_ini(i) = se(i) + ke(i) + (latvap+latice)*wv(i) + latice*wl(i)
+./cam/src/physics/cam/check_energy.F90:299:       state%tw_ini(i) = wv(i) + wl(i) + wi(i)
+./cam/src/physics/cam/check_energy.F90:301:       state%te_cur(i) = state%te_ini(i)
+./cam/src/physics/cam/check_energy.F90:302:       state%tw_cur(i) = state%tw_ini(i)
+./cam/src/physics/cam/check_energy.F90:313:       call pbuf_set_field(pbuf, teout_idx, state%te_ini, col_type=col_type)
+./cam/src/physics/cam/check_energy.F90:407:          se(i) = se(i) +         state%t(i,k)*cpairv_loc(i,k,lchnk)*state%pdel(i,k)/gravit
+./cam/src/physics/cam/check_energy.F90:444:       te_dif(i) = te(i) - state%te_cur(i)
+./cam/src/physics/cam/check_energy.F90:445:       tw_dif(i) = tw(i) - state%tw_cur(i)
+./cam/src/physics/cam/check_energy.F90:456:       te_xpd(i) = state%te_cur(i) + te_tnd(i)*ztodt
+./cam/src/physics/cam/check_energy.F90:457:       tw_xpd(i) = state%tw_cur(i) + tw_tnd(i)*ztodt
+./cam/src/physics/cam/check_energy.F90:460:       te_rer(i) = (te_xpd(i) - te(i)) / state%te_cur(i)
+./cam/src/physics/cam/check_energy.F90:465:    where (state%tw_cur(:ncol) > 0._r8)
+./cam/src/physics/cam/check_energy.F90:466:       tw_rer(:ncol) = (tw_xpd(:ncol) - tw(:ncol)) / state%tw_cur(:ncol)
+./cam/src/physics/cam/check_energy.F90:496:       state%te_cur(i) = te(i)
+./cam/src/physics/cam/check_energy.F90:497:       state%tw_cur(i) = tw(i)
+./cam/src/physics/cam/check_energy.F90:870:          se_tmp   =   cpair*state%t(i,k)                      *state%pdel(i,k)/gravit
+./cam/src/physics/cam/physics_types.F90:398:       call physconst_update(state%q, state%t, state%lchnk, state%ncol, state%pdel, state%pdeldry)
+./cam/src/physics/cam/physics_types.F90:413:          state%t(:ncol,k) = state%t(:ncol,k) + ptend%s(:ncol,k)*dt/cpairv_loc(:ncol,k,state%lchnk)
+./cam/src/physics/cam/physics_types.F90:424:            state%t     , state%q(:,:,1), rairv_loc(:,:,state%lchnk), gravit  , zvirv              , &
+./cam/src/physics/cam/physics_types.F90:428:          state%s(:ncol,k) = state%t(:ncol,k  )*cpairv_loc(:ncol,k,state%lchnk) &
+./cam/src/physics/cam/physics_types.F90:537:    call shr_assert_in_domain(state%te_ini(:ncol),      is_nan=.false., &
+./cam/src/physics/cam/physics_types.F90:538:         varname="state%te_ini",    msg=msg)
+./cam/src/physics/cam/physics_types.F90:539:    call shr_assert_in_domain(state%te_cur(:ncol),      is_nan=.false., &
+./cam/src/physics/cam/physics_types.F90:540:         varname="state%te_cur",    msg=msg)
+./cam/src/physics/cam/physics_types.F90:541:    call shr_assert_in_domain(state%tw_ini(:ncol),      is_nan=.false., &
+./cam/src/physics/cam/physics_types.F90:542:         varname="state%tw_ini",    msg=msg)
+./cam/src/physics/cam/physics_types.F90:543:    call shr_assert_in_domain(state%tw_cur(:ncol),      is_nan=.false., &
+./cam/src/physics/cam/physics_types.F90:544:         varname="state%tw_cur",    msg=msg)
+./cam/src/physics/cam/physics_types.F90:547:    call shr_assert_in_domain(state%t(:ncol,:),         is_nan=.false., &
+./cam/src/physics/cam/physics_types.F90:548:         varname="state%t",         msg=msg)
+./cam/src/physics/cam/physics_types.F90:611:    call shr_assert_in_domain(state%te_ini(:ncol),      lt=posinf_r8, gt=neginf_r8, &
+./cam/src/physics/cam/physics_types.F90:612:         varname="state%te_ini",    msg=msg)
+./cam/src/physics/cam/physics_types.F90:613:    call shr_assert_in_domain(state%te_cur(:ncol),      lt=posinf_r8, gt=neginf_r8, &
+./cam/src/physics/cam/physics_types.F90:614:         varname="state%te_cur",    msg=msg)
+./cam/src/physics/cam/physics_types.F90:615:    call shr_assert_in_domain(state%tw_ini(:ncol),      lt=posinf_r8, gt=neginf_r8, &
+./cam/src/physics/cam/physics_types.F90:616:         varname="state%tw_ini",    msg=msg)
+./cam/src/physics/cam/physics_types.F90:617:    call shr_assert_in_domain(state%tw_cur(:ncol),      lt=posinf_r8, gt=neginf_r8, &
+./cam/src/physics/cam/physics_types.F90:618:         varname="state%tw_cur",    msg=msg)
+./cam/src/physics/cam/physics_types.F90:621:    call shr_assert_in_domain(state%t(:ncol,:),         lt=posinf_r8, gt=0._r8, &
+./cam/src/physics/cam/physics_types.F90:622:         varname="state%t",         msg=msg)
+./cam/src/physics/cam/physics_types.F90:1265:            state%t     , state%zi      , state%zm   , ncol)
+./cam/src/physics/cam/physics_types.F90:1540:  allocate(state%t(psetcols,pver), stat=ierr)
+./cam/src/physics/cam/physics_types.F90:1541:  if ( ierr /= 0 ) call endrun('physics_state_alloc error: allocation error for state%t')
+./cam/src/physics/cam/physics_types.F90:1603:  allocate(state%te_ini(psetcols), stat=ierr)
+./cam/src/physics/cam/physics_types.F90:1604:  if ( ierr /= 0 ) call endrun('physics_state_alloc error: allocation error for state%te_ini')
+./cam/src/physics/cam/physics_types.F90:1606:  allocate(state%te_cur(psetcols), stat=ierr)
+./cam/src/physics/cam/physics_types.F90:1607:  if ( ierr /= 0 ) call endrun('physics_state_alloc error: allocation error for state%te_cur')
+./cam/src/physics/cam/physics_types.F90:1609:  allocate(state%tw_ini(psetcols), stat=ierr)
+./cam/src/physics/cam/physics_types.F90:1610:  if ( ierr /= 0 ) call endrun('physics_state_alloc error: allocation error for state%tw_ini')
+./cam/src/physics/cam/physics_types.F90:1612:  allocate(state%tw_cur(psetcols), stat=ierr)
+./cam/src/physics/cam/physics_types.F90:1613:  if ( ierr /= 0 ) call endrun('physics_state_alloc error: allocation error for state%tw_cur')
+./cam/src/physics/cam/physics_types.F90:1631:  state%t(:,:) = inf
+./cam/src/physics/cam/physics_types.F90:1654:  state%te_ini(:) = inf
+./cam/src/physics/cam/physics_types.F90:1655:  state%te_cur(:) = inf
+./cam/src/physics/cam/physics_types.F90:1656:  state%tw_ini(:) = inf
+./cam/src/physics/cam/physics_types.F90:1657:  state%tw_cur(:) = inf
+./cam/src/physics/cam/physics_types.F90:1691:  deallocate(state%t, stat=ierr)
+./cam/src/physics/cam/physics_types.F90:1692:  if ( ierr /= 0 ) call endrun('physics_state_dealloc error: deallocation error for state%t')
+./cam/src/physics/cam/physics_types.F90:1754:  deallocate(state%te_ini, stat=ierr)
+./cam/src/physics/cam/physics_types.F90:1755:  if ( ierr /= 0 ) call endrun('physics_state_dealloc error: deallocation error for state%te_ini')
+./cam/src/physics/cam/physics_types.F90:1757:  deallocate(state%te_cur, stat=ierr)
+./cam/src/physics/cam/physics_types.F90:1758:  if ( ierr /= 0 ) call endrun('physics_state_dealloc error: deallocation error for state%te_cur')
+./cam/src/physics/cam/physics_types.F90:1760:  deallocate(state%tw_ini, stat=ierr)
+./cam/src/physics/cam/physics_types.F90:1761:  if ( ierr /= 0 ) call endrun('physics_state_dealloc error: deallocation error for state%tw_ini')
+./cam/src/physics/cam/physics_types.F90:1763:  deallocate(state%tw_cur, stat=ierr)
+./cam/src/physics/cam/physics_types.F90:1764:  if ( ierr /= 0 ) call endrun('physics_state_dealloc error: deallocation error for state%tw_cur')
+./cam/src/physics/cam/trb_mtn_stress_cam.F90:149:       state%u    , state%v  , state%t , state%pmid , & 
+./cam/src/physics/cam/cloud_diagnostics.F90:393:             iwc(i,k)       = allcld_ice(i,k) * state%pmid(i,k) / (287.15_r8*state%t(i,k))
+./cam/src/physics/cam/cloud_diagnostics.F90:394:             lwc(i,k)       = allcld_liq(i,k) * state%pmid(i,k) / (287.15_r8*state%t(i,k))
+./cam/src/physics/cam/nucleate_ice_cam.F90:483:   t     => state%t
+./cam/src/physics/cam/cam_diagnostics.F90:866:        dtcond(i,k,lchnk) = state%t(i,k)
+./cam/src/physics/cam/cam_diagnostics.F90:882:        t_ttend(:ncol,:) = state%t(:ncol,:)
+./cam/src/physics/cam/cam_diagnostics.F90:938:    call outfld('T       ',state%t , pcols   ,lchnk   )
+./cam/src/physics/cam/cam_diagnostics.F90:967:          extrapolate='Z', ln_interp=.true., ps=state%ps, phis=state%phis, tbot=state%t(:,pver))
+./cam/src/physics/cam/cam_diagnostics.F90:972:          extrapolate='Z', ln_interp=.true., ps=state%ps, phis=state%phis, tbot=state%t(:,pver))
+./cam/src/physics/cam/cam_diagnostics.F90:977:          extrapolate='Z', ln_interp=.true., ps=state%ps, phis=state%phis, tbot=state%t(:,pver))
+./cam/src/physics/cam/cam_diagnostics.F90:1007:    ftem(:ncol,:) = state%v(:ncol,:)*state%t(:ncol,:)
+./cam/src/physics/cam/cam_diagnostics.F90:1039:    ftem(:ncol,:) = state%omega(:ncol,:)*state%t(:ncol,:)
+./cam/src/physics/cam/cam_diagnostics.F90:1061:    call cpslec(ncol, state%pmid, state%phis, state%ps, state%t, psl, gravit, rair)
+./cam/src/physics/cam/cam_diagnostics.F90:1067:      call vertinterp(ncol, pcols, pver, state%pmid, 85000._r8, state%t, p_surf, &
+./cam/src/physics/cam/cam_diagnostics.F90:1072:      call vertinterp(ncol, pcols, pver, state%pmid, 50000._r8, state%t, p_surf, &
+./cam/src/physics/cam/cam_diagnostics.F90:1077:      call vertinterp(ncol, pcols, pver, state%pmid, 40000._r8, state%t, p_surf, &
+./cam/src/physics/cam/cam_diagnostics.F90:1082:      call vertinterp(ncol, pcols, pver, state%pmid, 30000._r8, state%t, p_surf)
+./cam/src/physics/cam/cam_diagnostics.F90:1086:      call vertinterp(ncol, pcols, pver, state%pmid, 20000._r8, state%t, p_surf)
+./cam/src/physics/cam/cam_diagnostics.F90:1126:    ftem(:ncol,:) = state%t(:ncol,:)*state%t(:ncol,:)
+./cam/src/physics/cam/cam_diagnostics.F90:1145:      call vertinterp(ncol, pcols, pver, state%pmid, 100000._r8, state%t, p_surf_t(:,surf_100000))
+./cam/src/physics/cam/cam_diagnostics.F90:1151:      call vertinterp(ncol, pcols, pver, state%pmid, 92500._r8, state%t, p_surf_t(:,surf_092500))
+./cam/src/physics/cam/cam_diagnostics.F90:1175:      call vertinterp(ncol, pcols, pver, state%pmid, 85000._r8, state%t, p_surf_t(:,surf_085000))
+./cam/src/physics/cam/cam_diagnostics.F90:1192:      call vertinterp(ncol, pcols, pver, state%pmid, 70000._r8, state%t, p_surf_t(:,surf_070000))
+./cam/src/physics/cam/cam_diagnostics.F90:1212:      call vertinterp(ncol, pcols, pver, state%pmid, 1000._r8, state%t, p_surf)
+./cam/src/physics/cam/cam_diagnostics.F90:1315:          call qsat(state%t(:ncol,:), state%pmid(:ncol,:), &
+./cam/src/physics/cam/cam_diagnostics.F90:1325:      call qsat_water (state%t(:ncol,:), state%pmid(:ncol,:), &
+./cam/src/physics/cam/cam_diagnostics.F90:1333:          esi(i,k)=svp_ice(state%t(i,k))
+./cam/src/physics/cam/cam_diagnostics.F90:1345:          if (state%t(i,k) .gt. 273) then
+./cam/src/physics/cam/cam_diagnostics.F90:1381:    ftem(:ncol,:) = (cpair*state%t(:ncol,:) +  ftem1(:ncol,:) + latvap*state%q(:ncol,:,1) + &
+./cam/src/physics/cam/cam_diagnostics.F90:1395:        call vertinterp(ncol, pcols, pver, state%pmid, 100000._r8, state%t, p_surf_t(:, surf_100000))
+./cam/src/physics/cam/cam_diagnostics.F90:1402:        call vertinterp(ncol, pcols, pver, state%pmid, 92500._r8, state%t, p_surf_t(:, surf_092500))
+./cam/src/physics/cam/cam_diagnostics.F90:1436:        call vertinterp(ncol, pcols, pver, state%pmid, 85000._r8, state%t, p_surf_t(:, surf_085000))
+./cam/src/physics/cam/cam_diagnostics.F90:1451:        call vertinterp(ncol, pcols, pver, state%pmid, 70000._r8, state%t, p_surf_t(:, surf_070000))
+./cam/src/physics/cam/cam_diagnostics.F90:1640:          dtcond(i,k,lchnk) = (state%t(i,k) - dtcond(i,k,lchnk))*rtdt
+./cam/src/physics/cam/cam_diagnostics.F90:1983:    call outfld('TAP', state%t, pcols, lchnk   )
+./cam/src/physics/cam/cam_diagnostics.F90:2007:    ftem3(:ncol,:) = (state%t(:ncol,:) - t_ttend(:ncol,:))/ztodt
+./cam/src/physics/cam/cam_diagnostics.F90:2011:    t_ttend(:ncol,:) = state%t(:ncol,:)
+./cam/src/physics/cam/cam_diagnostics.F90:2175:    call outfld('TBP', state%t, pcols, lchnk   )
+./cam/src/physics/cam/phys_debug.F90:167:   call outfld('T_'//trim(tag),  state%t,        pcols, lchnk)
+./cam/src/physics/cam/convect_shallow.F90:567:                   pblh         ,  state%t      ,  state%q    ,  ptend_loc%s ,  ptend_loc%q ,   &
+./cam/src/physics/cam/convect_shallow.F90:593:                               state%t   , state%s , state%q(:,:,:) ,                                                   &
+./cam/src/physics/cam/hetfrz_classnuc_cam.F90:639:      t     => state%t,                 &
+./cam/src/physics/cam/cospsimulator_intr.F90:1744:    ! I do not need to define these variables.  I can use them as is, e.g., state%t
+./cam/src/physics/cam/cospsimulator_intr.F90:1747:    !state%t     ! temperature (K)
+./cam/src/physics/cam/cospsimulator_intr.F90:1859:    call qsat_water(state%t(1:ncol,1:pver), state%pmid(1:ncol,1:pver), &
+./cam/src/physics/cam/cospsimulator_intr.F90:2074:    cospstateIN%at                             = state%t(1:ncol,1:pver) 
+./cam/src/physics/cam/vertical_diffusion.F90:870:        tint(i,k)  = 0.5_r8 * ( state%t(i,k) + state%t(i,k-1) )
+./cam/src/physics/cam/vertical_diffusion.F90:873:  tint(:ncol,pver+1) = state%t(:ncol,pver)
+./cam/src/physics/cam/vertical_diffusion.F90:876:  call ubc_get_vals( state%lchnk, ncol, state%pint, state%zi, state%t, state%q, state%omega, state%phis, &
+./cam/src/physics/cam/vertical_diffusion.F90:888:     tint(:ncol,1) = state%t(:ncol,1)
+./cam/src/physics/cam/vertical_diffusion.F90:965:  th(:ncol,:pver) = state%t(:ncol,:pver) * state%exner(:ncol,:pver)
+./cam/src/physics/cam/vertical_diffusion.F90:990:          th        , state%t  , state%q , state%zm , state%zi, &
+./cam/src/physics/cam/vertical_diffusion.F90:1009:     call calc_ustar( ncol, state%t(:ncol,pver), state%pmid(:ncol,pver), &
+./cam/src/physics/cam/vertical_diffusion.F90:1060:     call qsat(state%t(:ncol,:), state%pmid(:ncol,:), &
+./cam/src/physics/cam/vertical_diffusion.F90:1072:     call outfld( 't_pre_PBL    ', state%t,                   pcols, lchnk )
+./cam/src/physics/cam/vertical_diffusion.F90:1124:          p    , state%t      , rhoi, ztodt         , taux          , &
+./cam/src/physics/cam/vertical_diffusion.F90:1157:          p_dry , state%t      , rhoi_dry,  ztodt         , taux          , &
+./cam/src/physics/cam/vertical_diffusion.F90:1325:           t_pro(i,k)  = state%t(i,k)          + (1._r8/cpair)*ptend%s(i,k) * ztodt
+./cam/src/physics/cam/vertical_diffusion.F90:1356:     tten(:ncol,:pver)        = ( t_aftPBL(:ncol,:pver)    - state%t(:ncol,:pver) )              * rztodt
+./cam/src/physics/cam/tidal_diag.F90:130:       call outfld( 'T_24_SIN', state%t(:ncol,:)*dcoef(1), ncol, lchnk )
+./cam/src/physics/cam/tidal_diag.F90:131:       call outfld( 'T_24_COS', state%t(:ncol,:)*dcoef(2), ncol, lchnk )
+./cam/src/physics/cam/tidal_diag.F90:134:       call outfld( 'T_12_SIN', state%t(:ncol,:)*dcoef(3), ncol, lchnk )
+./cam/src/physics/cam/tidal_diag.F90:135:       call outfld( 'T_12_COS', state%t(:ncol,:)*dcoef(4), ncol, lchnk )
+./cam/src/physics/cam/tidal_diag.F90:138:       call outfld( 'T_08_SIN', state%t(:ncol,:)*dcoef(5), ncol, lchnk )
+./cam/src/physics/cam/tidal_diag.F90:139:       call outfld( 'T_08_COS', state%t(:ncol,:)*dcoef(6), ncol, lchnk )
+./cam/src/physics/cam/micro_mg_cam.F90:2508:        (rair*state%t(:ncol,top_lev:))
+./cam/src/physics/cam/physpkg.F90:1542:    call pbuf_set_field(pbuf, teout_idx, state%te_cur, (/1,itim_old/),(/pcols,1/))
+./cam/src/physics/cam/physpkg.F90:1601:       dtcore(:ncol,k) = state%t(:ncol,k)
+./cam/src/physics/cam/physpkg.F90:1878:    call outfld('TEINP', state%te_ini, pcols, lchnk   )
+./cam/src/physics/cam/physpkg.F90:1879:    call outfld('TEFIX', state%te_cur, pcols, lchnk   )
+./cam/src/physics/cam/physpkg.F90:1883:       dtcore(:ncol,:pver) = (state%t(:ncol,:pver) - dtcore(:ncol,:pver))/ztodt
+./cam/src/physics/cam/dadadj_cam.F90:114:    ptend%s(:ncol,:pver)   = state%t(:ncol,:pver)
+./cam/src/physics/cam/dadadj_cam.F90:131:    ptend%s(:ncol,:)   = (ptend%s(:ncol,:)   - state%t(:ncol,:)  )/dt * cpairv(:ncol,:,lchnk)
+./cam/src/physics/cam/unicon_cam.F90:1112:      t0(:iend,k)         = state%t(:iend,k_inv)
+./cam/src/physics/cam/macrop_driver.F90:659:     tcwat(:ncol,:) = state%t(:ncol,:)
+./cam/src/physics/cam/tropopause.F90:575:             shybrid_temp = ALPHA * pstate%t(i,k) - Log10(pstate%pmid(i,k))
+./cam/src/physics/cam/tropopause.F90:654:        stobie(:) = ALPHA * pstate%t(i,:) - log10(pstate%pmid(i, :))
+./cam/src/physics/cam/tropopause.F90:850:        call twmo(pstate%t(i, :), pstate%pmid(i, :), plimu, pliml, gam, tP)
+./cam/src/physics/cam/tropopause.F90:933:          dt = pstate%t(i, k) - pstate%t(i, k-1)
+./cam/src/physics/cam/tropopause.F90:946:              dt = pstate%t(i, k) - pstate%t(i, k2)
+./cam/src/physics/cam/tropopause.F90:1034:          if (pstate%t(i, k) < tmin) then
+./cam/src/physics/cam/tropopause.F90:1036:            tmin = pstate%t(i,k)
+./cam/src/physics/cam/tropopause.F90:1051:            f0 = pstate%t(i, tropLev(i)-1)
+./cam/src/physics/cam/tropopause.F90:1052:            f1 = pstate%t(i, tropLev(i))
+./cam/src/physics/cam/tropopause.F90:1053:            f2 = pstate%t(i, tropLev(i)+1)
+./cam/src/physics/cam/tropopause.F90:1323:      tropT = pstate%t(icol, tropLev)
+./cam/src/physics/cam/tropopause.F90:1329:        dTdlogP = (pstate%t(icol, tropLev) - pstate%t(icol, tropLev - 1)) / & 
+./cam/src/physics/cam/tropopause.F90:1331:        tropT = pstate%t(icol, tropLev) + (log(tropP) - log(pstate%pmid(icol, tropLev))) * dTdlogP
+./cam/src/physics/cam/tropopause.F90:1337:        dTdlogP = (pstate%t(icol, tropLev + 1) - pstate%t(icol, tropLev)) / &
+./cam/src/physics/cam/tropopause.F90:1339:        tropT = pstate%t(icol, tropLev) + (log(tropP) - log(pstate%pmid(icol, tropLev))) * dTdlogP
+./cam/src/physics/cam/eddy_diff_cam.F90:364:       pcols    , pver        , state%ncol       , state%t    , tint, state%q(:,:,1) , ztodt   , &
+./cam/src/physics/cam/aer_rad_props.F90:204:   call qsat(state%t(1:ncol,1:pver), state%pmid(1:ncol,1:pver), &
+./cam/src/physics/cam/aer_rad_props.F90:385:      call qsat(state%t(1:ncol,1:pver), state%pmid(1:ncol,1:pver), &
+./cam/src/physics/cam/ndrop.F90:439:   temp     => state%t
+./cam/src/physics/cam/ndrop.F90:1801:   tair  => state%t
+./cam/src/physics/cam/modal_aer_opt.F90:618:   air_density(:ncol,:) = state%pmid(:ncol,:)/(rair*state%t(:ncol,:))
+./cam/src/physics/cam/beljaars_drag_cam.F90:144:       state%u    , state%v  , state%t , state%pmid , & 
+./cam/src/physics/cam/radiation_data.F90:596:    call outfld(temp_fldn,   state%t,               pcols, lchnk   )
+./cam/src/physics/cam/subcol_utils.F90.in:397:      call subcol_state_field_copy(state%te_ini,    state_sc, state_sc%te_ini)
+./cam/src/physics/cam/subcol_utils.F90.in:398:      call subcol_state_field_copy(state%te_cur,    state_sc, state_sc%te_cur)
+./cam/src/physics/cam/subcol_utils.F90.in:399:      call subcol_state_field_copy(state%tw_ini,    state_sc, state_sc%tw_ini)
+./cam/src/physics/cam/subcol_utils.F90.in:400:      call subcol_state_field_copy(state%tw_cur,    state_sc, state_sc%tw_cur)
+./cam/src/physics/cam/subcol_utils.F90.in:401:      call subcol_state_field_copy(state%t,         state_sc, state_sc%t)
+./cam/src/physics/cam/rk_stratiform.F90:625:      tcwat(:ncol,:) = state%t(:ncol,:)
+./cam/src/physics/camrt/radiation.F90:1091:                 lwupcgs, state%t, sp_hum, o3, pbr, &
+./cam/src/dynamics/se/dycore/prim_advection_mod.F90:994:        internal_energy_star = internal_energy_star*elem(ie)%state%t(:,:,:,np1)
+./cam/src/dynamics/se/dycore/prim_advection_mod.F90:1048:        elem(ie)%state%t(:,:,:,np1)=internal_energy_star/ttmp(:,:,:,2)
+./cam/src/dynamics/se/dycore/prim_advection_mod.F90:1050:        internal_energy_star(:,:,:)=elem(ie)%state%t(:,:,:,np1)*dp_star_moist
+./cam/src/dynamics/se/dycore/prim_advection_mod.F90:1052:        elem(ie)%state%t(:,:,:,np1)=internal_energy_star*dp_inv
+./cam/src/dynamics/se/dycore/prim_advection_mod.F90:1068:      elem(ie)%state%t(:,:,:,np1) = &
+./cam/src/dynamics/se/dycore/prim_advection_mod.F90:1069:           ( elem(ie)%state%t(:,:,:,np1) - ( (elem(ie)%state%v(:,:,1,:,np1)**2 + &
+./cam/src/control/camsrfexch.F90:518:      cam_out%tbot(i)  = state%t(i,pver)
+./cam/src/control/camsrfexch.F90:519:      cam_out%thbot(i) = state%t(i,pver) * state%exner(i,pver)
+./cam/src/chemistry/utils/modal_aero_calcsize.F90:404:   t    => state%t
+./cam/src/chemistry/utils/modal_aero_wateruptake.F90:325:   t      => state%t
+./cam/src/chemistry/aerosol/wetdep.F90:153:  call clddiag( state%t,     state%pmid,   state%pdel,   inputs%cmfdqr, inputs%evapc, &
+./cam/src/chemistry/modal_aero/modal_aero_convproc.F90:540:                     state%t,    state%pmid, state%pdel, qaa,        &   
+./cam/src/chemistry/modal_aero/modal_aero_convproc.F90:765:                     state%t,    state%pmid, state%pdel, qaa,        &   
+./cam/src/chemistry/modal_aero/aero_model.F90:746:                  ustar,ram1in,ram1,state%t(:,pver),state%pmid(:,pver),&
+./cam/src/chemistry/modal_aero/aero_model.F90:761:    tvs(:ncol,:) = state%t(:ncol,:)!*(1+state%q(:ncol,k)
+./cam/src/chemistry/modal_aero/aero_model.F90:762:    rho(:ncol,:)=  state%pmid(:ncol,:)/(rair*state%t(:ncol,:))
+./cam/src/chemistry/modal_aero/aero_model.F90:772:    call modal_aero_depvel_part( ncol,state%t(:,:), state%pmid(:,:), ram1, fv,  &
+./cam/src/chemistry/modal_aero/aero_model.F90:776:    call modal_aero_depvel_part( ncol,state%t(:,:), state%pmid(:,:), ram1, fv,  &
+./cam/src/chemistry/modal_aero/aero_model.F90:797:             call modal_aero_depvel_part( ncol, state%t(:,:), state%pmid(:,:), ram1, fv,  & 
+./cam/src/chemistry/modal_aero/aero_model.F90:801:             call modal_aero_depvel_part( ncol, state%t(:,:), state%pmid(:,:), ram1, fv,  & 
+./cam/src/chemistry/modal_aero/aero_model.F90:857:                     ncol,             dt,       state%pint(:,:), state%pmid, state%pdel, state%t , &
+./cam/src/chemistry/modal_aero/aero_model.F90:892:                     ncol,             dt,       state%pint(:,:), state%pmid, state%pdel, state%t , &
+./cam/src/chemistry/modal_aero/aero_model.F90:924:                     ncol,             dt,       state%pint(:,:), state%pmid, state%pdel, state%t , &
+./cam/src/chemistry/mozart/mo_waccm_hrates.F90:205:         ele_temp_fld => state%t
+./cam/src/chemistry/mozart/mo_waccm_hrates.F90:206:         ion_temp_fld => state%t
+./cam/src/chemistry/mozart/mo_waccm_hrates.F90:291:      call setinv( invariants, state%t, h2ovmr, vmr, state%pmid, ncol, lchnk, pbuf )
+./cam/src/chemistry/mozart/mo_waccm_hrates.F90:306:      call setrxt_hrates( reaction_rates, state%t, invariants(1,1,indexm), ncol, kbot_hrates )
+./cam/src/chemistry/mozart/mo_waccm_hrates.F90:307:      call usrrxt_hrates( reaction_rates, state%t, ele_temp_fld, ion_temp_fld, &
+./cam/src/chemistry/mozart/mo_waccm_hrates.F90:361:            tline(:)    = state%t(i,:)
+./cam/src/chemistry/mozart/mo_waccm_hrates.F90:431:      call aurora( state%t, mbar, rlats, &
+./cam/src/chemistry/mozart/chemistry.F90:1353:    call neu_wetdep_tend(lchnk,ncol,state%q,state%pmid,state%pdel,state%zi,state%t,dt, &
+./cam/src/chemistry/mozart/chemistry.F90:1368:                          state%t, state%pmid, state%pdel, state%pint, &
+./cam/src/chemistry/bulk_aero/aero_model.F90:453:                  ustar,ram1in,ram1,state%t(:,pver),state%pmid(:,pver),&
+./cam/src/chemistry/bulk_aero/aero_model.F90:470:    tvs(:ncol,:) = state%t(:ncol,:)
+./cam/src/chemistry/bulk_aero/aero_model.F90:471:    rho(:ncol,:) = state%pmid(:ncol,:)/(rair*state%t(:ncol,:))
+./cam/src/chemistry/bulk_aero/aero_model.F90:475:       call sslt_depvel( state%t(:,:), state%pmid(:,:), state%q(:,:,1), ram1, fv, ncol, lchnk, &
+./cam/src/chemistry/bulk_aero/aero_model.F90:479:       call dust_depvel( state%t(:,:), state%pmid(:,:),                 ram1, fv, ncol, &
+./cam/src/chemistry/bulk_aero/aero_model.F90:506:               ncol,             dt,       state%pint(:,:), state%pmid, state%pdel, state%t , &
+./cam/src/chemistry/bulk_aero/aero_model.F90:624:       call wetdepa_v1( state%t, state%pmid, state%q(:,:,1), state%pdel, &
